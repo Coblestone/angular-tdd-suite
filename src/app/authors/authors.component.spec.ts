@@ -65,7 +65,7 @@ describe('AuthorsComponent', () => {
     return  new Promise(resolve => setTimeout(resolve, ms));
   }
 
-   async function waitUntilTrue (testFunction){
+  async function waitUntilTrue (testFunction){
     while (testFunction() != true){
       await timeout(5);
     }
