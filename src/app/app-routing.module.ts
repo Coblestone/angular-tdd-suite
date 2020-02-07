@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import {AuthorsComponent} from './authors/authors.component'
-import {AuthorComponent} from './authors/author.component'
+import {AuthorComponent} from './authors/components/author.component'
 import {AuthorsService} from './authors/authors.service'
 
 import { NgxJsonapiModule } from 'ngx-jsonapi';

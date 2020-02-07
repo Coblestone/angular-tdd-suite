@@ -3,7 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SpyLocation }         from '@angular/common/testing';
 
 import { AuthorsComponent } from './authors.component';
-import { AuthorComponent } from './author.component';
+import { AuthorComponent } from './components/author.component';
 import {Location} from "@angular/common";
 import { AuthorsService } from './authors.service';
 import {By} from "@angular/platform-browser";
@@ -21,7 +21,7 @@ const server = new Pretender(function() {
     return [200, {"Content-Type": "application/vnd.api+json"}, all]
   });
 
-  
+
 });
 server.undhandledRequest = function(verb, path, request) {
 console.log("what is this I don't even...");
@@ -34,11 +34,11 @@ describe('AuthorsComponent', () => {
   let server: Pretender;
   let location: SpyLocation;
   beforeEach(async(() => {
-    
+
     TestBed.configureTestingModule({
       declarations: [ AuthorsComponent ,AuthorComponent],
       providers: [AuthorsService],
-      
+
       imports:  [NgxJsonapiModule.forRoot({
         url: '//jsonapiplayground.reyesoft.com/v2/'
       }), RouterTestingModule.withRoutes([
@@ -46,21 +46,21 @@ describe('AuthorsComponent', () => {
       ])]
     })
     .compileComponents();
-    
+
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(AuthorsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-    
-    
+
+
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-  
+
   async function timeout(ms) {
     return  new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -71,8 +71,8 @@ describe('AuthorsComponent', () => {
     }
   }
   it('show all the authors', async () =>  {
-    
-    
+
+
     await waitUntilTrue(function(){
       return component.isDataLoaded == true
     });
