@@ -9,7 +9,15 @@ import { BooksComponent } from './books/books.component';
 import { BookComponent } from './books/components/book.component';
 import { AuthorsService } from './authors/authors.service';
 import { BooksService } from './books/books.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule, Routes } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { NgxJsonapiModule } from 'ngx-jsonapi';
+
+export const routes: Routes = [
+  { path: 'authors', component: AuthorsComponent },
+  { path: 'authors/:id', component: AuthorComponent },
+  { path: 'books', component: BooksComponent },
+];
 
 @NgModule({
   declarations: [
@@ -21,9 +29,13 @@ import { ActivatedRoute } from '@angular/router';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    HttpClientModule,
+    RouterModule.forRoot(routes),
+    NgxJsonapiModule.forRoot({
+      url: '//jsonapiplayground.reyesoft.com/v2/'
+  })
   ],
-  providers: [AuthorsService, BooksService, ActivatedRoute],
+  providers: [AuthorsService, BooksService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

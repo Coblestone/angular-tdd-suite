@@ -1,7 +1,14 @@
 <p>author works!</p>
 
-<div class="author" *ngFor="let author of authors.data">
-  id: {{ author.id }} <br />
-  name: {{ author.attributes.name }} <br />
-  birth date: {{ author.attributes.date_of_birth | date }}
+<div class="author">
+  <h1>Author</h1>
+  {{author.id}}
+  {{author.attributes.name}}
+  {{author.attributes.date_of_birth}}
+
+  <h1>Books</h1>
+  <div *ngFor="let book of author.relationships.books.data">
+    {{book.attributes.title}}
+    {{book.attributes.date_published}}
+  </div>
 </div>

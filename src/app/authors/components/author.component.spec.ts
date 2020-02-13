@@ -1,26 +1,34 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {By} from "@angular/platform-browser";
-import { NgxJsonapiModule } from 'ngx-jsonapi';
-
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { RouterLinkWithHref } from "@angular/router";
 import { AuthorComponent } from './author.component';
-import { AuthorsComponent } from './../authors.component';
-import { AuthorsService } from './../authors.service';
-import { ActivatedRoute } from '@angular/router';
+import { DocumentCollection, NgxJsonapiModule } from 'ngx-jsonapi';
+import { Author, AuthorsService } from '../authors.service';
+import { By } from '@angular/platform-browser';
+import Pretender from 'pretender';
+import { Router } from '@angular/router';
+import { Location } from "@angular/common"
+import { RouterTestingModule } from '@angular/router/testing';
+import { routes } from '../../app.module'
+import { AuthorsComponent } from '../authors.component';
+import { BooksComponent } from '../../books/books.component';
+
+// TODO Implémentation Pretender ici quand tout ok
 
 describe('AuthorComponent', () => {
+  let router: Router;
+  let location: Location;
   let component: AuthorComponent;
   let fixture: ComponentFixture<AuthorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AuthorsComponent, AuthorComponent],
-      providers: [AuthorsService, ActivatedRoute],
-
-      imports:  [NgxJsonapiModule.forRoot({
-        url: '//jsonapiplayground.reyesoft.com/v2/'
-      })/*, RouterTestingModule.withRoutes([
-        { path: 'authors/:id', component: AuthorComponent}
-      ])*/]
+      imports: [RouterTestingModule.withRoutes(routes),
+        NgxJsonapiModule.forRoot({
+          url: '//jsonapiplayground.reyesoft.com/v2/'
+        })
+      ],
+      providers:[AuthorsService],
+      declarations: [ AuthorComponent,AuthorsComponent,BooksComponent ]
     })
     .compileComponents();
   }));
@@ -29,32 +37,19 @@ describe('AuthorComponent', () => {
     fixture = TestBed.createComponent(AuthorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
+    location = TestBed.get(Location);
+    router.initialNavigation();
   });
 
-  it('should create single author', () => {
+  it('should create', () => {
     expect(component).toBeTruthy();
   });
 
+  it('show one author detail /authors/1', fakeAsync (() =>  {
+    router.navigate(['/authors/1'])
+    tick();
+    expect(location.path()).toBe('/authors/1');
+  }));
 
-  it('show all the authors', async () =>  {
-    await waitUntilTrue(function(){
-      return component.isDataLoaded == true
-    });
-
-    fixture.detectChanges();
-
-    const authorElements = fixture.debugElement.queryAll(By.css('.author'));
-    expect(authorElements.length).toBeGreaterThan(3);
-
-  });
-
-  async function timeout(ms) {
-    return  new Promise(resolve => setTimeout(resolve, ms));
-  }
-
-  async function waitUntilTrue (testFunction){
-    while (testFunction() != true){
-      await timeout(5);
-    }
-  }
 });

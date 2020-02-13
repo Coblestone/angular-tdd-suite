@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { DocumentCollection } from 'ngx-jsonapi';
 import { AuthorsService, Author } from './../authors.service';
+import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { Book, BooksService } from '../../books/books.service';
 
 @Component({
   selector: 'app-author',
@@ -11,31 +13,32 @@ import { ActivatedRoute } from '@angular/router';
 export class AuthorComponent implements OnInit {
 
   public author: Author;
-  public isDataLoaded: boolean;
-  //private route: ActivatedRoute;
+  public books: DocumentCollection<Book>;
+  public idAuthor: string
+  private routeSub: Subscription;
 
-  constructor(private authorsService: AuthorsService, private route: ActivatedRoute) {
-    this.route.params.subscribe(({ id }) => {
-        authorsService.get(id, {include : ['books']}).subscribe(
-          author => {
-            this.author = author;
-          },
-          error => console.error('Impossible de récupérer l\'auteur.', error)
-        );
-      });
+  constructor(
+    private authorsService: AuthorsService,
+    private route: ActivatedRoute) {
+   }
+
+   public getOneAuthor(): void{
+    this.authorsService
+      .get(
+        this.idAuthor,
+        {include:['books','photos']}
+      )
+      .subscribe(author => {
+        this.author = author
+        console.log(author)
+      },
+      error => console.error('Could not load author :(', error));
   }
 
-  ngOnInit() {
-
-    this.isDataLoaded = false;
-    const data = this.authorsService.all({
-      // include: ['books', 'photos'],
+  ngOnInit(){
+    this.routeSub = this.route.params.subscribe(params => {
+      this.idAuthor=params['id']
     });
-    data.subscribe(authors => {
-      //this.author = authors;
-    }, null, () => {
-      this.isDataLoaded = true;
-    });
+    this.getOneAuthor();
   }
-
 }

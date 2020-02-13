@@ -7,31 +7,24 @@ import { AuthorsService, Author } from './authors.service';
 @Component({
   selector: 'app-authors',
   templateUrl: './authors.component.html',
-  styleUrls: ['./authors.component.sass']
+  styleUrls: ['./authors.component.sass'],
+  providers: [AuthorsService]
 })
 export class AuthorsComponent implements OnInit {
+
   public authors: DocumentCollection<Author>;
-  public isDataLoaded: boolean;
+  public idAuthor: Number;
+
   public constructor(private authorsService: AuthorsService) {
-
-    }
-
+    this.authorsService.all({
+      })
+      .subscribe(authors => {
+        this.authors = authors;
+      },
+      error => console.error('Could not load authors :(', error));
+  }
 
   ngOnInit() {
 
-      this.isDataLoaded = false;
-      const data = this.authorsService.all({
-        // include: ['books', 'photos'],
-      });
-
-      data.subscribe(authors => {
-
-      this.authors = authors;
-
-    }, null, () => {
-      this.isDataLoaded = true;
-
-
-    });
   }
 }
